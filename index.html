@@ -91,6 +91,7 @@
             <option value="Rebouças - JN">Rebouças - JN</option>
             <option value="Rebouças - Cassol">Rebouças - Cassol</option>
             <option value="Comunicação">Comunicação (SACOD)</option>
+            <option value="DeArtes">DeArtes</option>
         </select>
 
         <select id="destino">
@@ -103,6 +104,7 @@
             <option value="Rebouças - JN">Rebouças - JN</option>
             <option value="Rebouças - Cassol">Rebouças - Cassol</option>
             <option value="Comunicação">Comunicação (SACOD)</option>
+            <option value="DeArtes">DeArtes</option>
         </select>
 
         <button onclick="consultarHorarios()">Buscar Horários</button>
@@ -111,7 +113,6 @@
     </div>
 
     <script>
-        // Atualizar relógio em tempo real
         function atualizarRelogio() {
             const agora = new Date();
             const options = { hour: '2-digit', minute: '2-digit', hour12: false };
@@ -120,7 +121,6 @@
         setInterval(atualizarRelogio, 1000);
         atualizarRelogio();
 
-        // Dados atualizados com Comunicação/SACOD
         const horarios = {
             "Intercampi 01": [
                 {hora: "06:45", ponto: "Agrárias - saída"},
@@ -177,6 +177,56 @@
                 {hora: "18:15", ponto: "Reitoria"},
                 {hora: "18:45", ponto: "Agrárias - Recolhe"}
             ],
+            "Intercampi 04 - DeArtes": [
+                {hora: "06:55", ponto: "Agrárias - Saída"},
+                {hora: "07:05", ponto: "Reitoria"},
+                {hora: "07:15", ponto: "DeArtes", estimado: true},
+                {hora: "07:30", ponto: "Reitoria"},
+                {hora: "07:50", ponto: "Botânico", estimado: true},
+                {hora: "08:25", ponto: "Politécnico"},
+                {hora: "08:30", ponto: "SEPT", estimado: true},
+                {hora: "08:50", ponto: "Agrárias"},
+                {hora: "09:15", ponto: "DeArtes", estimado: true},
+                {hora: "09:40", ponto: "Reitoria"},
+                {hora: "09:50", ponto: "Comunicação", estimado: true},
+                {hora: "10:00", ponto: "Agrárias"},
+                {hora: "10:20", ponto: "Botânico", estimado: true},
+                {hora: "10:40", ponto: "Politécnico"},
+                {hora: "10:45", ponto: "SEPT", estimado: true},
+                {hora: "11:00", ponto: "Agrárias"},
+                {hora: "11:20", ponto: "Botânico", estimado: true},
+                {hora: "11:30", ponto: "Politécnico"},
+                {hora: "11:35", ponto: "SEPT", estimado: true},
+                {hora: "12:00", ponto: "Reitoria"},
+                {hora: "12:15", ponto: "DeArtes", estimado: true},
+                {hora: "12:30", ponto: "Reitoria"},
+                {hora: "12:40", ponto: "Agrárias - Chegada"},
+                {hora: "13:05", ponto: "Agrárias - saída"},
+                {hora: "13:15", ponto: "Reitoria"},
+                {hora: "13:30", ponto: "DeArtes", estimado: true},
+                {hora: "13:45", ponto: "Reitoria"},
+                {hora: "14:00", ponto: "Agrárias - chegada"},
+                {hora: "14:30", ponto: "Agrárias - saída"},
+                {hora: "14:50", ponto: "Botânico", estimado: true},
+                {hora: "15:10", ponto: "Politécnico"},
+                {hora: "15:15", ponto: "SEPT", estimado: true},
+                {hora: "15:30", ponto: "Botânico", estimado: true},
+                {hora: "16:00", ponto: "DeArtes", estimado: true},
+                {hora: "16:30", ponto: "Reitoria"},
+                {hora: "16:40", ponto: "Comunicação", estimado: true},
+                {hora: "17:00", ponto: "Agrárias"},
+                {hora: "17:20", ponto: "Botânico", estimado: true},
+                {hora: "17:40", ponto: "Politécnico"},
+                {hora: "17:45", ponto: "SEPT", estimado: true},
+                {hora: "17:55", ponto: "Rebouças", estimado: true},
+                {hora: "18:20", ponto: "Reitoria"},
+                {hora: "18:30", ponto: "Comunicação", estimado: true},
+                {hora: "18:50", ponto: "Agrárias"},
+                {hora: "19:10", ponto: "Reitoria"},
+                {hora: "19:30", ponto: "DeArtes", estimado: true},
+                {hora: "19:50", ponto: "Reitoria"},
+                {hora: "20:00", ponto: "Agrárias - Recolhe"}
+            ],
             "Intercampi Noturno": [
                 {hora: "22:10", ponto: "Comunicação (SACOD)"},
                 {hora: "22:20", ponto: "Reitoria", estimado: true},
@@ -190,7 +240,10 @@
         };
 
         function normalizarNome(ponto) {
-            return ponto.replace('SACOD', 'Comunicação').replace('Comunicação (SACOD)', 'Comunicação');
+            return ponto
+                .replace('SACOD', 'Comunicação')
+                .replace('Comunicação (SACOD)', 'Comunicação')
+                .replace('DeArtes', 'DeArtes');
         }
 
         function consultarHorarios() {
