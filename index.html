@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Horários Intercampi Atualizado</title>
     <style>
-        /* Mantido o mesmo CSS da versão anterior */
         body {
             font-family: Arial, sans-serif;
             max-width: 800px;
@@ -19,13 +18,21 @@
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        .relogio {
-            font-size: 1.5em;
+        .horario-input {
+            font-size: 1.2em;
             color: #2c3e50;
             margin-bottom: 20px;
             padding: 10px;
             background: #e8f4fd;
             border-radius: 5px;
+            text-align: center;
+        }
+        .horario-input input {
+            padding: 8px;
+            border: 2px solid #3498db;
+            border-radius: 5px;
+            font-size: 16px;
+            width: 80px;
             text-align: center;
         }
         select {
@@ -79,7 +86,10 @@
 </head>
 <body>
     <div class="container">
-        <div class="relogio" id="relogio"></div>
+        <div class="horario-input">
+            Informe o horário atual: 
+            <input type="time" id="horarioAtual" value="12:00">
+        </div>
         
         <select id="origem">
             <option value="">Selecione a origem</option>
@@ -113,14 +123,6 @@
     </div>
 
     <script>
-        function atualizarRelogio() {
-            const agora = new Date();
-            const options = { hour: '2-digit', minute: '2-digit', hour12: false };
-            document.getElementById('relogio').textContent = 'Horário Atual: ' + agora.toLocaleTimeString('pt-BR', options);
-        }
-        setInterval(atualizarRelogio, 1000);
-        atualizarRelogio();
-
         const horarios = {
             "Intercampi 01": [
                 {hora: "06:45", ponto: "Agrárias - saída"},
@@ -236,6 +238,46 @@
                 {hora: "23:05", ponto: "Rebouças - Cassol", estimado: true},
                 {hora: "23:10", ponto: "Reitoria", estimado: true},
                 {hora: "23:20", ponto: "Agrárias"}
+            ],
+            "Intercampi Extra": [
+                {hora: "06:45", ponto: "Reitoria"},
+                {hora: "06:55", ponto: "Botânico", estimado: true},
+                {hora: "07:00", ponto: "Politécnico"},
+                {hora: "07:15", ponto: "Reitoria"},
+                {hora: "07:25", ponto: "Comunicação", estimado: true},
+                {hora: "07:30", ponto: "Agrárias - Recolhe"},
+                {hora: "11:45", ponto: "Politécnico"},
+                {hora: "11:50", ponto: "SEPT", estimado: true},
+                {hora: "12:05", ponto: "Reitoria - Recolhe"},
+                {hora: "12:15", ponto: "Comunicação", estimado: true},
+                {hora: "15:25", ponto: "Reitoria"},
+                {hora: "15:35", ponto: "Botânico", estimado: true},
+                {hora: "15:45", ponto: "Politécnico"},
+                {hora: "16:05", ponto: "Reitoria - Recolhe"},
+                {hora: "16:15", ponto: "Comunicação", estimado: true},
+                {hora: "18:05", ponto: "Reitoria"},
+                {hora: "18:25", ponto: "Botânico", estimado: true},
+                {hora: "18:30", ponto: "Politécnico"},
+                {hora: "18:50", ponto: "Reitoria - Recolhe"},
+                {hora: "19:05", ponto: "Comunicação", estimado: true}
+            ],
+            "Intercampi 03 - Sábados": [
+                {hora: "06:30", ponto: "Agrárias - Saída"},
+                {hora: "06:45", ponto: "Reitoria"},
+                {hora: "06:55", ponto: "Botânico", estimado: true},
+                {hora: "07:05", ponto: "Politécnico"},
+                {hora: "07:20", ponto: "Comunicação", estimado: true},
+                {hora: "07:25", ponto: "Agrárias"},
+                {hora: "07:40", ponto: "Botânico", estimado: true},
+                {hora: "08:00", ponto: "Politécnico"},
+                {hora: "08:25", ponto: "Reitoria"},
+                {hora: "09:00", ponto: "Agrárias - Chegada"},
+                {hora: "11:00", ponto: "Agrárias - Saída"},
+                {hora: "11:10", ponto: "Reitoria"},
+                {hora: "11:25", ponto: "Botânico", estimado: true},
+                {hora: "11:30", ponto: "Politécnico"},
+                {hora: "11:50", ponto: "Reitoria"},
+                {hora: "12:00", ponto: "Agrárias - Recolhe"}
             ]
         };
 
@@ -249,12 +291,23 @@
         function consultarHorarios() {
             const origem = normalizarNome(document.getElementById('origem').value);
             const destino = normalizarNome(document.getElementById('destino').value);
-            const agora = new Date();
-            const horaAtual = agora.getHours() * 60 + agora.getMinutes();
+            
+            // Obter horário manual
+            const horarioInput = document.getElementById('horarioAtual').value;
+            const [horas, minutos] = horarioInput.split(':').map(Number);
+            const horaAtual = horas * 60 + minutos;
             
             let resultadosHTML = '';
             
             for (const [linha, pontos] of Object.entries(horarios)) {
+                // Verificar se é sábado para mostrar/ocultar Intercampi Sábados
+                const hoje = new Date();
+                const ehSabado = hoje.getDay() === 6; // 6 = sábado
+                
+                if (linha.includes("Sábados") && !ehSabado) {
+                    continue; // Pula se não for sábado
+                }
+                
                 let viagens = [];
                 let origemEncontrada = false;
                 let partida = null;
